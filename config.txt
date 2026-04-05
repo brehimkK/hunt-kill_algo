@@ -1,0 +1,13 @@
+WIDTH = 20
+
+HEIGHT = 15
+
+ENTRY = 0,0
+
+EXIT = 9,14
+
+OUTPUT_FILE = maze.txt
+
+PERFECT = 1
+
+SEED = 2
