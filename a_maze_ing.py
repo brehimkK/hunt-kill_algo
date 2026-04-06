@@ -1,6 +1,6 @@
 import sys
 import os
-from maze.maze_solver import MazeSolver
+from .maze.maze_solver import MazeSolver
 from maze.maze_generator import MazeGenerator
 
 
@@ -13,7 +13,7 @@ def parse_config() -> dict:
 
     # Get Line, Strip it, Split based on '=', Store key value
     try:
-        config = {}
+        config: dict = {}
         if len(sys.argv) > 1:
             filename = sys.argv[1]
             with open(filename, "r") as file:
@@ -46,8 +46,9 @@ def parse_config() -> dict:
         for key, value in config.items():
 
             if key in ["ENTRY", "EXIT"]:
-                x, y = value.split(",")
-                x, y = int(x), int(y)
+                x_str, y_str = value.split(",")
+                x = int(x_str)
+                y = int(y_str)
                 if x < 0 or y < 0:
                     raise ValueError(f"{key} coordinates out of bounds")
                 config[key] = (x, y)

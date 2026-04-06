@@ -19,7 +19,7 @@ class MazeSolver:
 
         blocks = deque([current_block])
         visited = set()
-        familly_map = {current_block: None}
+        familly_map: dict = {current_block: None}
         visited.add(current_block)
 
         while blocks:

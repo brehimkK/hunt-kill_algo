@@ -19,8 +19,8 @@ class MazeGenerator:
 
         self.seed = config["SEED"]
 
-        self.grid = []
-        self.solution = []
+        self.grid: list = []
+        self.solution: list = []
         self.show_path = False
 
     def grid_builder(self) -> None:
@@ -94,17 +94,21 @@ class MazeGenerator:
         for dy, dx in four:
             if 0 <= dy < self.height and 0 <= dx < self.width:
                 if (self.entry.x == dx) and (self.entry.y == dy):
-                    raise ValueError("Entry coordinates are part or the 42 pattern")
+                    raise ValueError("Entry coordinates are part "
+                                     "or the 42 pattern")
                 elif (self.exit.x == dx) and (self.exit.y == dy):
-                    raise ValueError("Exit coordinates are part or the 42 pattern")
+                    raise ValueError("Exit coordinates are part or"
+                                     " the 42 pattern")
                 self.grid[dy][dx].is_pattern = True
 
         for dy, dx in two:
             if 0 <= dy < self.height and 0 <= dx < self.width:
                 if (self.entry.x == dx) and (self.entry.y == dy):
-                    raise ValueError("Entry coordinates are part or the 42 pattern")
+                    raise ValueError("Entry coordinates are"
+                                     "part or the 42 pattern")
                 elif (self.exit.x == dx) and (self.exit.y == dy):
-                    raise ValueError("Exit coordinates are part or the 42 pattern")
+                    raise ValueError("Exit coordinates are part"
+                                     " or the 42 pattern")
                 self.grid[dy][dx].is_pattern = True
 
     def get_unvisited_neighbors(self, block: Block) -> list:
@@ -263,14 +267,18 @@ class MazeGenerator:
             # Row 1: draw the "top" walls of each cell + corner walls
             for x in range(self.width):
                 b = self.grid[y][x]
-                print(colors[index].get("WHITE"), end="")  # the left corner / pillar
-                print(colors[index].get("WHITE") if b.has_wall("top") else colors[index].get("BLACK"), end="")
+                print(colors[index].get("WHITE"), end="")  # the left corner/pillar
+                print(
+                    colors[index].get("WHITE") if b.has_wall("top")
+                    else colors[index].get("BLACK"), end="")
             print(colors[index].get("WHITE"))  # rightmost corner
 
             # Row 2: draw the "left" walls and the cell interior
             for x in range(self.width):
                 b = self.grid[y][x]
-                print(colors[index].get("WHITE") if b.has_wall("left") else colors[index].get("BLACK"), end="")
+                print(
+                    colors[index].get("WHITE") if b.has_wall("left")
+                    else colors[index].get("BLACK"), end="")
 
                 # cell interior (entry/exit/pattern/path)
                 if (x, y) == (ex, ey):
@@ -286,13 +294,17 @@ class MazeGenerator:
 
             # rightmost boundary: use the right wall of last cell
             last = self.grid[y][self.width - 1]
-            print(colors[index].get("WHITE") if last.has_wall("right") else colors[index].get("BLACK"))
+            print(
+                colors[index].get("WHITE") if last.has_wall("right")
+                else colors[index].get("BLACK"))
 
         # Bottom boundary: draw the "bottom" walls of the last row
         for x in range(self.width):
             b = self.grid[self.height - 1][x]
             print(colors[index].get("WHITE"), end="")
-            print(colors[index].get("WHITE") if b.has_wall("bottom") else colors[index].get("BLACK"), end="")
+            print(
+                colors[index].get("WHITE") if b.has_wall("bottom")
+                else colors[index].get("BLACK"), end="")
         print(colors[index].get("WHITE"))
 
     def get_visited_neighbors(self, block: Block) -> list[Block]:
