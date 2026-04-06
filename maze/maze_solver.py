@@ -1,10 +1,10 @@
-from maze.block import Block
+from maze.maze_generator import Block, MazeGenerator
 from collections import deque
 
 
 class MazeSolver:
 
-    def __init__(self, maze):
+    def __init__(self, maze: MazeGenerator) -> None:
         self.height = maze.height
         self.width = maze.width
 
@@ -26,7 +26,10 @@ class MazeSolver:
             current_block = blocks.popleft()
 
             # stop if we reach the exit and save its block
-            if (current_block.x, current_block.y) == (exit_block.x, exit_block.y):
+            if (
+                (current_block.x, current_block.y)
+                == (exit_block.x, exit_block.y)
+            ):
                 break
 
             cx, cy = current_block.x, current_block.y

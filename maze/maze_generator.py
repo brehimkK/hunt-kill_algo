@@ -1,5 +1,38 @@
 import random
-from maze.block import Block
+
+
+class Block:
+
+    def __init__(self, x: int, y: int):
+        """
+        Initialize the attributes :
+        x, y => ofc the coordinates,
+        walls => if the block closed or not
+        checked => if the block already visited or not
+        ...
+        """
+        self.x = x
+        self.y = y
+        self.walls = {"top": True, "bottom": True, "left": True, "right": True}
+        self.checked = False
+        self.is_pattern = False
+        self.is_path = False
+
+    def has_wall(self, direction: str) -> bool:
+        """
+        check if block has wall in the given direction
+        and return True if yes , otherwise False
+        """
+        if self.walls[direction] is True:
+            return True
+        return False
+
+    def pop_wall(self, direction: str) -> None:
+        """
+        Mark the Direction as 'False' to Create Edge
+        and Make the Two Blocks Connected
+        """
+        self.walls[direction] = False
 
 
 class MazeGenerator:
@@ -34,7 +67,7 @@ class MazeGenerator:
                 row.append(Block(x, y))
             self.grid.append(row)
 
-    def remove_wall_between(self, a: Block, b: Block):
+    def remove_wall_between(self, a: Block, b: Block) -> None:
 
         cx, cy = a.x, a.y
         nx, ny = b.x, b.y
@@ -235,28 +268,28 @@ class MazeGenerator:
 
         colors = [
             {
-                "WHITE": "\033[48;5;255m  \033[0m",
-                "BLACK": "\033[48;5;0m  \033[0m",
-                "GREEN": "\033[48;5;46m  \033[0m",
-                "RED": "\033[48;5;196m  \033[0m",
-                "BORDEAUX": "\033[48;5;57m  \033[0m",
-                "BLUE": "\033[48;5;21m  \033[0m"
+                "WALL": "\033[48;5;255m  \033[0m",
+                "BLOCK": "\033[48;5;0m  \033[0m",
+                "ENTRY": "\033[48;5;226m  \033[0m",
+                "EXIT": "\033[48;5;196m  \033[0m",
+                "PATTERN": "\033[48;5;57m  \033[0m",
+                "PATH": "\033[48;5;21m  \033[0m"
             },
             {
-                "WHITE": "\033[48;5;236m  \033[0m",
-                "BLACK": "\033[48;5;250m  \033[0m",
-                "GREEN": "\033[48;5;82m  \033[0m",
-                "RED": "\033[48;5;160m  \033[0m",
-                "BORDEAUX": "\033[48;5;88m  \033[0m",
-                "BLUE": "\033[48;5;27m  \033[0m"
+                "WALL": "\033[48;5;236m  \033[0m",
+                "BLOCK": "\033[48;5;213m  \033[0m",
+                "ENTRY": "\033[48;5;82m  \033[0m",
+                "EXIT": "\033[48;5;160m  \033[0m",
+                "PATTERN": "\033[48;5;88m  \033[0m",
+                "PATH": "\033[48;5;220m  \033[0m"
             },
             {
-                "WHITE": "\033[48;5;33m  \033[0m",
-                "BLACK": "\033[48;5;17m  \033[0m",
-                "GREEN": "\033[48;5;118m  \033[0m",
-                "RED": "\033[48;5;202m  \033[0m",
-                "BORDEAUX": "\033[48;5;125m  \033[0m",
-                "BLUE": "\033[48;5;39m  \033[0m"
+                "WALL": "\033[48;5;33m  \033[0m",
+                "BLOCK": "\033[48;5;231m  \033[0m",
+                "ENTRY": "\033[48;5;82m  \033[0m",
+                "EXIT": "\033[48;5;202m  \033[0m",
+                "PATTERN": "\033[48;5;161m  \033[0m",
+                "PATH": "\033[48;5;0m  \033[0m"
             }
         ]
 
@@ -267,45 +300,45 @@ class MazeGenerator:
             # Row 1: draw the "top" walls of each cell + corner walls
             for x in range(self.width):
                 b = self.grid[y][x]
-                print(colors[index].get("WHITE"), end="")  # the left corner/pillar
+                print(colors[index].get("WALL"), end="")
                 print(
-                    colors[index].get("WHITE") if b.has_wall("top")
-                    else colors[index].get("BLACK"), end="")
-            print(colors[index].get("WHITE"))  # rightmost corner
+                    colors[index].get("WALL") if b.has_wall("top")
+                    else colors[index].get("BLOCK"), end="")
+            print(colors[index].get("WALL"))  # rightmost corner
 
             # Row 2: draw the "left" walls and the cell interior
             for x in range(self.width):
                 b = self.grid[y][x]
                 print(
-                    colors[index].get("WHITE") if b.has_wall("left")
-                    else colors[index].get("BLACK"), end="")
+                    colors[index].get("WALL") if b.has_wall("left")
+                    else colors[index].get("BLOCK"), end="")
 
                 # cell interior (entry/exit/pattern/path)
                 if (x, y) == (ex, ey):
-                    print(colors[index].get("GREEN"), end="")
+                    print(colors[index].get("ENTRY"), end="")
                 elif (x, y) == (ox, oy):
-                    print(colors[index].get("RED"), end="")
+                    print(colors[index].get("EXIT"), end="")
                 elif b.is_pattern:
-                    print(colors[index].get("BORDEAUX"), end="")
+                    print(colors[index].get("PATTERN"), end="")
                 elif self.show_path and b.is_path:
-                    print(colors[index].get("BLUE"), end="")
+                    print(colors[index].get("PATH"), end="")
                 else:
-                    print(colors[index].get("BLACK"), end="")
+                    print(colors[index].get("BLOCK"), end="")
 
             # rightmost boundary: use the right wall of last cell
             last = self.grid[y][self.width - 1]
             print(
-                colors[index].get("WHITE") if last.has_wall("right")
-                else colors[index].get("BLACK"))
+                colors[index].get("WALL") if last.has_wall("right")
+                else colors[index].get("BLOCK"))
 
         # Bottom boundary: draw the "bottom" walls of the last row
         for x in range(self.width):
             b = self.grid[self.height - 1][x]
-            print(colors[index].get("WHITE"), end="")
+            print(colors[index].get("WALL"), end="")
             print(
-                colors[index].get("WHITE") if b.has_wall("bottom")
-                else colors[index].get("BLACK"), end="")
-        print(colors[index].get("WHITE"))
+                colors[index].get("WALL") if b.has_wall("bottom")
+                else colors[index].get("BLOCK"), end="")
+        print(colors[index].get("WALL"))
 
     def get_visited_neighbors(self, block: Block) -> list[Block]:
         """
@@ -322,7 +355,6 @@ class MazeGenerator:
             if 0 <= nx < self.width and 0 <= ny < self.height:
                 neighbor = self.grid[ny][nx]
 
-                # 2. Check if the neighbor is visited AND not part of the '42' pattern
                 if neighbor.checked and not neighbor.is_pattern:
                     visited_neighbors.append(neighbor)
 
@@ -335,7 +367,7 @@ class MazeGenerator:
         current_block.checked = True
 
         while current_block is not None:  # walk
-            unvisited = self.get_unvisited_neighbors(current_block)  # get neighbors
+            unvisited = self.get_unvisited_neighbors(current_block)
 
             if unvisited:  # if there's a neighbors
                 neighbor = random.choice(unvisited)  # chose neighbor randomly
@@ -351,12 +383,20 @@ class MazeGenerator:
                     for x in range(self.width):
                         potential_block = self.grid[y][x]
 
-                        if not potential_block.checked and not potential_block.is_pattern:
-                            visited_neighbors = self.get_visited_neighbors(potential_block)
+                        if (
+                                not potential_block.checked
+                                and not potential_block.is_pattern
+                        ):
+                            visited_neighbors = self.get_visited_neighbors(
+                                potential_block
+                            )
 
                             if visited_neighbors:
                                 neighbor = random.choice(visited_neighbors)
-                                self.remove_wall_between(potential_block, neighbor)
+                                self.remove_wall_between(
+                                    potential_block,
+                                    neighbor
+                                )
 
                                 potential_block.checked = True
                                 current_block = potential_block

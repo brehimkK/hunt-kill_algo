@@ -4,9 +4,9 @@ HEIGHT = 15
 
 ENTRY = 0, 0
 
-EXIT =  19, 14
+EXIT =  19, 11
 
-OUTPUT_FILE = |out.file.txt
+OUTPUT_FILE = maze.txt
 
 PERFECT = true
 
