@@ -1,6 +1,6 @@
 import sys
 import os
-from .maze.maze_solver import MazeSolver
+from maze.maze_solver import MazeSolver
 from maze.maze_generator import MazeGenerator
 
 
@@ -14,6 +14,15 @@ def parse_config() -> dict:
     # Get Line, Strip it, Split based on '=', Store key value
     try:
         config: dict = {}
+        valid_keys = [
+            "WIDTH",
+            "HEIGHT",
+            "ENTRY",
+            "EXIT",
+            "OUTPUT_FILE",
+            "PERFECT",
+            "SEED"]
+
         if len(sys.argv) > 1:
             filename = sys.argv[1]
             with open(filename, "r") as file:
@@ -33,6 +42,9 @@ def parse_config() -> dict:
                         key, value = key.strip(), value.strip()
                         if key in config:
                             raise ValueError("Duplicate Lines")
+                        if key not in valid_keys:
+                            raise ValueError(f"Key: '{key}' is not Valid")
+
                         config[key] = value
         else:
             raise IndexError("No Config File Given")
@@ -77,14 +89,24 @@ def parse_config() -> dict:
                     )
 
             elif key == "OUTPUT_FILE":
+                # value = value.strip()
                 lower_value = value.lower()
-                if "." in value:
-                    basename, format = lower_value.split(".", 1)
-                    if format != "txt" or value == "":
-                        raise ValueError(f"OUTPUT_FILE '{value}' is not valid")
-                    config[key] = lower_value
-                else:
+
+                if value == "":
+                    raise ValueError(f"OUTPUT_FILE '{value}' is not valid")
+
+                if " " in value or "/" in value:
+                    raise ValueError(f"OUTPUT_FILE '{value}' is not valid")
+
+                if "." not in value:
                     raise ValueError("Output file format is Invalid")
+
+                basename, format = lower_value.rsplit(".", 1)
+
+                if format != "txt" or basename == "":
+                    raise ValueError(f"OUTPUT_FILE '{value}' is not valid")
+
+                config[key] = lower_value
 
     except Exception as err:
         print(f"ERROR: {err}", file=sys.stderr)
@@ -93,12 +115,14 @@ def parse_config() -> dict:
     return config
 
 
-def init_program(algo: str) -> None:
+def init_program(algo: str, maze: MazeGenerator) -> None:
     if algo == "hak":
         algo = "Hunt & Kill"
     if algo == "dfs":
         algo = "Depth first search - dfs"
 
+    if maze.height <= 6 or maze.width <= 7:
+        print(">> Maze too small, Can't display Pattern")
     print("\n=== A_Maze_ing ===")
     print("1. Re-generate a new maze")
     print("2. Show/Hide path from entry to exit")
@@ -128,6 +152,7 @@ def main() -> None:
     while True:
         maze = MazeGenerator(config)
         solve = MazeSolver(maze)
+
         try:
             maze.grid_builder()
             if not maze.grid:
@@ -138,6 +163,8 @@ def main() -> None:
             end = config["EXIT"]
             x, y = entry
             exit_x, exit_y = end
+            if entry == end:
+                raise ValueError("entry and exit can't be in the same block")
 
             start_block = maze.grid[y][x]
             end_block = maze.grid[exit_y][exit_x]
@@ -160,9 +187,6 @@ def main() -> None:
 
         solve.solve_maze(start_block, end_block)
 
-        # maze visualization
-        maze.visual(index)
-
         try:
             hex_output = maze.hex_encoding()
             path = maze.path_direction()
@@ -183,10 +207,12 @@ def main() -> None:
         except Exception as err:
             print(f"ERROR: {err}")
 
+        # User Interactions
         while True:
             os.system("clear")
+            # maze visualization
             maze.visual(index)
-            init_program(algo)
+            init_program(algo, maze)
             choice = start_program(maze)
 
             if choice == 1:

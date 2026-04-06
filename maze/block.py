@@ -1,4 +1,5 @@
 class Block:
+
     def __init__(self, x: int, y: int):
         """
         Initialize the attributes :

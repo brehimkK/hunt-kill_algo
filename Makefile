@@ -14,3 +14,11 @@ clean:
 	find . -type f -name "*.pyc" -delete
 run :
 	$(PYTHON) $(MAIN) $(CONFIG)
+
+lint:
+	flake8 .
+	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+
+lint-strict:
+	flake8 .
+	mypy . --strict

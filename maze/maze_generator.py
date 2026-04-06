@@ -92,7 +92,7 @@ class MazeGenerator:
         ]
 
         for dy, dx in four:
-            if 0 <= dy < self.height and 0 <= dx < self.width:
+            if 0 <= dy < self.height > 6 and 0 <= dx < self.width > 7:
                 if (self.entry.x == dx) and (self.entry.y == dy):
                     raise ValueError("Entry coordinates are part "
                                      "or the 42 pattern")
@@ -102,7 +102,7 @@ class MazeGenerator:
                 self.grid[dy][dx].is_pattern = True
 
         for dy, dx in two:
-            if 0 <= dy < self.height and 0 <= dx < self.width:
+            if 0 <= dy < self.height > 6 and 0 <= dx < self.width > 7:
                 if (self.entry.x == dx) and (self.entry.y == dy):
                     raise ValueError("Entry coordinates are"
                                      "part or the 42 pattern")
