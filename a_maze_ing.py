@@ -70,12 +70,13 @@ def parse_config() -> dict:
 
             elif key in ["WIDTH", "HEIGHT", "SEED"]:
                 try:
-                    value = int(value)
-                    if value <= 0 and key != "SEED":
+                    val = int(value)
+                    if val <= 0 and key != "SEED":
                         raise ValueError()
-                    config[key] = value
-                except (TypeError, ValueError) as err:
-                    raise ValueError(f"{key}: '{value}' must be Positive number")
+                    config[key] = val
+                except (TypeError, ValueError):
+                    raise ValueError(f"{key}: '{val}' must be Positive"
+                                     " number")
 
             elif key == "PERFECT":
                 value = value.lower().capitalize()

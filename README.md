@@ -37,7 +37,7 @@ make run
 Or manually:
 
 ```bash
-python3 Amaze/a_maze_ing.py
+python3 a_maze_ing.py config.txt
 ```
 
 ---
@@ -71,23 +71,19 @@ Removes:
 make lint
 ```
 
-Strict version:
-
-```bash
-make lint-strict
-```
-
 ---
 
 ## Maze Configuration File Format
 
 The configuration file uses a simple key=value format:
 
-```ini
+```
 WIDTH=20
 HEIGHT=15
 ENTRY=0,0
 EXIT=19,14
+OUTPUT_FILE = maze.txt
+PERFECT=True
 ```
 
 Fields:
@@ -95,6 +91,9 @@ Fields:
 - `HEIGHT` → maze height (integer)
 - `ENTRY` → starting coordinate as `x,y`
 - `EXIT` → ending coordinate as `x,y`
+- `OUTPUT_FILE` → the output file name `maze.txt`
+- `PERFECT` → `True or False`
+
 
 All four fields are required. Coordinates are zero-indexed and must lie within the bounds defined by `WIDTH` and `HEIGHT`.
 

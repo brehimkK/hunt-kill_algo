@@ -178,9 +178,8 @@ class MazeGenerator:
         last item (the current block) and access the last one [-1]
         this is BackTracking :)
         """
-        if self.seed != None:
+        if self.seed is not None:
             random.seed(self.seed)
-
 
         stack = [current_block]
         current_block.checked = True
@@ -373,7 +372,7 @@ class MazeGenerator:
 
     def hunt_kill_generation(self) -> None:
 
-        if self.seed != None:
+        if self.seed is not None:
             random.seed(self.seed)
 
         current_block = self.grid[self.entry.y][self.entry.x]
