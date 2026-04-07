@@ -38,7 +38,7 @@ def parse_config() -> dict:
 
                     else:
                         key, value = line.split("=", 1)
-                        key, value = key.strip(), value.strip()
+                        key, value = key.strip().upper(), value.strip()
                         if key in config:
                             raise ValueError("Duplicate Lines")
                         if key not in valid_keys and not "SEED":
