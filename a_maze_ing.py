@@ -20,8 +20,7 @@ def parse_config() -> dict:
             "ENTRY",
             "EXIT",
             "OUTPUT_FILE",
-            "PERFECT",
-            "SEED"]
+            "PERFECT"]
 
         if len(sys.argv) > 1:
             filename = sys.argv[1]
@@ -42,12 +41,16 @@ def parse_config() -> dict:
                         key, value = key.strip(), value.strip()
                         if key in config:
                             raise ValueError("Duplicate Lines")
-                        if key not in valid_keys:
+                        if key not in valid_keys and not "SEED":
                             raise ValueError(f"Key: '{key}' is not Valid")
 
                         config[key] = value
         else:
             raise IndexError("No Config File Given")
+
+        missing_keys = set(valid_keys) - set(config.keys())
+        if missing_keys:
+            raise ValueError(f"Missing keys: {missing_keys}")
 
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
@@ -67,9 +70,12 @@ def parse_config() -> dict:
 
             elif key in ["WIDTH", "HEIGHT", "SEED"]:
                 try:
-                    config[key] = int(value)
-                except (TypeError, ValueError):
-                    raise ValueError(f"'{value}' must be an int")
+                    value = int(value)
+                    if value <= 0 and key != "SEED":
+                        raise ValueError()
+                    config[key] = value
+                except (TypeError, ValueError) as err:
+                    raise ValueError(f"{key}: '{value}' must be Positive number")
 
             elif key == "PERFECT":
                 value = value.lower().capitalize()
@@ -146,6 +152,7 @@ def start_program(maze: MazeGenerator) -> int:
 
 def main() -> None:
     config = parse_config()
+
     algo = "dfs"
     index = 0
 
@@ -208,6 +215,7 @@ def main() -> None:
             print(f"ERROR: {err}")
 
         # User Interactions
+        flag = 0
         while True:
             os.system("clear")
             # maze visualization
@@ -216,7 +224,9 @@ def main() -> None:
             choice = start_program(maze)
 
             if choice == 1:
-                config["SEED"] += 1
+                if maze.seed is None:
+                    flag += 1
+                    maze.seed = flag
                 break
 
             elif choice == 2:

@@ -50,7 +50,10 @@ class MazeGenerator:
         self.entry = config["ENTRY"]
         self.exit = config["EXIT"]
 
-        self.seed = config["SEED"]
+        if "SEED" in config.keys():
+            self.seed = config["SEED"]
+        else:
+            self.seed = None
 
         self.grid: list = []
         self.solution: list = []
@@ -175,7 +178,9 @@ class MazeGenerator:
         last item (the current block) and access the last one [-1]
         this is BackTracking :)
         """
-        random.seed(self.seed)
+        if self.seed != None:
+            random.seed(self.seed)
+
 
         stack = [current_block]
         current_block.checked = True
@@ -361,7 +366,9 @@ class MazeGenerator:
         return visited_neighbors
 
     def hunt_kill_generation(self) -> None:
-        random.seed(self.seed)
+
+        if self.seed != None:
+            random.seed(self.seed)
 
         current_block = self.grid[self.entry.y][self.entry.x]
         current_block.checked = True
