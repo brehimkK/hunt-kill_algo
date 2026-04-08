@@ -73,6 +73,30 @@ make lint
 
 ---
 
+## Resources
+
+### References
+
+- [Maze Generation Algorithms — Wikipedia](https://en.wikipedia.org/wiki/Maze_generation_algorithm)
+- [Depth-First Search — Wikipedia](https://en.wikipedia.org/wiki/Depth-first_search)
+- [Hunt and Kill Algorithm — Jamis Buck's blog](http://weblog.jamisbuck.org/2011/1/24/maze-generation-hunt-and-kill-algorithm)
+- [Python `pdb` documentation](https://docs.python.org/3/library/pdb.html)
+- [mypy documentation](https://mypy.readthedocs.io/en/stable/)
+- [flake8 documentation](https://flake8.pycqa.org/en/latest/)
+
+### AI Usage
+
+AI (Claude by Anthropic) was used as a **learning and debugging assistant** during this project. Specifically:
+
+- **Debugging**: Identifying type errors flagged by `mypy` and `flake8`, and understanding their root causes
+- **Makefile**: Improving the structure and target definitions of the Makefile
+- **Algorithm explanations**: Clarifying how Hunt & Kill and DFS work step by step
+- **Lint fixes**: Resolving line-length violations (E501) and annotation issues
+
+AI was not used to generate the core logic, algorithms, or project structure. All implementation decisions were made by the team.
+
+---
+
 ## Maze Configuration File Format
 
 The configuration file uses a simple key=value format:
@@ -136,11 +160,6 @@ The following modules are designed to be reused independently of the rest of the
 | Component | Location | How to reuse |
 |---|---|---|
 | Grid system | `maze/maze_generator.py` | Import the `Grid` class to create and manipulate any 2D grid structure |
-| Pathfinding logic | `maze/maze_solver.py` | Import the solver and pass any valid grid with entry/exit points |
-| Config parser | `maze/config_parser.py` | Import and call `parse_config(filepath)` to load any `key=value` config file |
-| Visualization system | `maze/visualizer.py` | Import and pass any grid to render it as ASCII or graphical output |
-
-Each component has no hard dependency on the others and can be imported individually.
 
 ---
 
@@ -177,35 +196,10 @@ The initial plan underestimated the time needed to unify two separate algorithm 
 
 ### Tools Used
 
-- **Python 3** — main language
 - **pdb** — interactive debugger
 - **flake8** — linting and style enforcement
 - **mypy** — static type checking
 - **Makefile** — task automation
-
----
-
-## Resources
-
-### References
-
-- [Maze Generation Algorithms — Wikipedia](https://en.wikipedia.org/wiki/Maze_generation_algorithm)
-- [Depth-First Search — Wikipedia](https://en.wikipedia.org/wiki/Depth-first_search)
-- [Hunt and Kill Algorithm — Jamis Buck's blog](http://weblog.jamisbuck.org/2011/1/24/maze-generation-hunt-and-kill-algorithm)
-- [Python `pdb` documentation](https://docs.python.org/3/library/pdb.html)
-- [mypy documentation](https://mypy.readthedocs.io/en/stable/)
-- [flake8 documentation](https://flake8.pycqa.org/en/latest/)
-
-### AI Usage
-
-AI (Claude by Anthropic) was used as a **learning and debugging assistant** during this project. Specifically:
-
-- **Debugging**: Identifying type errors flagged by `mypy` and `flake8`, and understanding their root causes
-- **Makefile**: Improving the structure and target definitions of the Makefile
-- **Algorithm explanations**: Clarifying how Hunt & Kill and DFS work step by step
-- **Lint fixes**: Resolving line-length violations (E501) and annotation issues
-
-AI was not used to generate the core logic, algorithms, or project structure. All implementation decisions were made by the team.
 
 ---
 
