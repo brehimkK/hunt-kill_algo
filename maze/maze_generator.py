@@ -5,11 +5,11 @@ class Block:
 
     def __init__(self, y: int, x: int):
         """
-        Initialize the attributes :
-        x, y => ofc the coordinates,
-        walls => if the block closed or not
-        checked => if the block already visited or not
-        ...
+            Initialize the attributes :
+            x, y => ofc the coordinates,
+            walls => if the block closed or not
+            checked => if the block already visited or not
+            ...
         """
         self.x = x
         self.y = y
