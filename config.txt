@@ -8,4 +8,4 @@ EXIT =  19,14
 
 OUTPUT_FILE = maze.txt
 
-PERFECT = 1
+PERFECT = True
