@@ -306,58 +306,59 @@ class MazeGenerator:
         ex, ey = self.entry.x, self.entry.y
         ox, oy = self.exit.x, self.exit.y
 
+        block = colors[index].get("BLOCK")
+        wall = colors[index].get("WALL")
+        entry = colors[index].get("ENTRY")
+        exit = colors[index].get("EXIT")
+        pattern = colors[index].get("PATTERN")
+        path = colors[index].get("PATH")
         for y in range(self.height):
-            # Row 1: draw the "top" walls of each cell + corner walls
             for x in range(self.width):
                 b = self.grid[y][x]
-                print(colors[index].get("WALL"), end="")
+                print(wall, end="")
                 print(
-                    colors[index].get("WALL") if b.has_wall("top")
-                    else colors[index].get("BLOCK"), end="")
-            print(colors[index].get("WALL"))  # rightmost corner
+                    wall if b.has_wall("top")
+                    else block, end="")
+            print(wall)  # rightmost corner
 
             # Row 2: draw the "left" walls and the cell interior
             for x in range(self.width):
                 b = self.grid[y][x]
                 print(
-                    colors[index].get("WALL") if b.has_wall("left")
-                    else colors[index].get("BLOCK"), end="")
+                    wall if b.has_wall("left")
+                    else block, end="")
 
                 # cell interior (entry/exit/pattern/path)
                 if (x, y) == (ex, ey):
-                    print(colors[index].get("ENTRY"), end="")
+                    print(entry, end="")
                 elif (x, y) == (ox, oy):
-                    print(colors[index].get("EXIT"), end="")
+                    print(exit, end="")
                 elif b.is_pattern:
-                    print(colors[index].get("PATTERN"), end="")
+                    print(pattern, end="")
                 elif self.show_path and b.is_path:
-                    print(colors[index].get("PATH"), end="")
+                    print(path, end="")
                 else:
-                    print(colors[index].get("BLOCK"), end="")
+                    print(block, end="")
 
             # rightmost boundary: use the right wall of last cell
             last = self.grid[y][self.width - 1]
             print(
-                colors[index].get("WALL") if last.has_wall("right")
-                else colors[index].get("BLOCK"))
+                wall if last.has_wall("right")
+                else block)
 
         # Bottom boundary: draw the "bottom" walls of the last row
         for x in range(self.width):
             b = self.grid[self.height - 1][x]
-            print(colors[index].get("WALL"), end="")
+            print(wall, end="")
             print(
-                colors[index].get("WALL") if b.has_wall("bottom")
-                else colors[index].get("BLOCK"), end="")
-        print(colors[index].get("WALL"))
+                wall if b.has_wall("bottom")
+                else block, end="")
+        print(wall)
 
     def get_visited_neighbors(self, block: Block) -> list[Block]:
-        """
-        Finds adjacent blocks that are already part of the maze.
-        """
         visited_neighbors = []
         x, y = block.x, block.y
 
-        # Potential neighbor coordinates
         potential_coords = [(x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y)]
 
         for nx, ny in potential_coords:

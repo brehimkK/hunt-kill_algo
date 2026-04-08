@@ -146,103 +146,107 @@ def start_program(maze: MazeGenerator) -> int:
         else:
             print(f"'{user_input}' is not a valid choice!")
             return start_program(maze)
-    except ValueError:
+    except (ValueError):
         print("Please enter a valid number.")
         return start_program(maze)
 
 
 def main() -> None:
-    config = parse_config()
+    try:
+        config = parse_config()
 
-    algo = "dfs"
-    index = 0
+        algo = "dfs"
+        index = 0
 
-    while True:
-        maze = MazeGenerator(config)
-        solve = MazeSolver(maze)
-
-        try:
-            maze.grid_builder()
-            if not maze.grid:
-                raise ValueError("Empty grid")
-
-            # Get the Entry Coordinates from the config
-            entry = config["ENTRY"]
-            end = config["EXIT"]
-            x, y = entry
-            exit_x, exit_y = end
-            if entry == end:
-                raise ValueError("entry and exit can't be in the same block")
-
-            start_block = maze.grid[y][x]
-            end_block = maze.grid[exit_y][exit_x]
-
-            maze.entry = start_block
-            maze.exit = end_block
-
-            maze.ft_pattern()
-        except Exception as e:
-            print(f"Unexpected Error: {e}")
-            exit(0)
-
-        if algo == "dfs":
-            maze.dfs_generation(start_block)
-        elif algo == "hak":
-            maze.hunt_kill_generation()
-
-        if not config["PERFECT"]:
-            maze.random_loops()
-
-        solve.solve_maze(start_block, end_block)
-
-        try:
-            hex_output = maze.hex_encoding()
-            path = maze.path_direction()
-
-            output_file = config["OUTPUT_FILE"]
-            with open(output_file, "w") as f:
-                for row in hex_output:
-                    f.write("".join(row) + "\n")
-
-                f.write("\n")
-                f.write(f"{x},{y}")
-                f.write("\n")
-                f.write(f"{exit_x},{exit_y}")
-
-                f.write("\n")
-                for p in path:
-                    f.write(p)
-        except Exception as err:
-            print(f"ERROR: {err}")
-
-        # User Interactions
-        flag = 0
         while True:
-            os.system("clear")
-            # maze visualization
-            maze.visual(index)
-            init_program(algo, maze)
-            choice = start_program(maze)
+            maze = MazeGenerator(config)
+            solve = MazeSolver(maze)
 
-            if choice == 1:
-                if maze.seed is None:
-                    flag += 1
-                    maze.seed = flag
-                break
+            try:
+                maze.grid_builder()
+                if not maze.grid:
+                    raise ValueError("Empty grid")
 
-            elif choice == 2:
-                maze.show_path = not maze.show_path
+                # Get the Entry Coordinates from the config
+                entry = config["ENTRY"]
+                end = config["EXIT"]
+                x, y = entry
+                exit_x, exit_y = end
+                if entry == end:
+                    raise ValueError("entry and exit can't be in the "
+                                     "same block")
 
-            elif choice == 3:
-                index = (index + 1) % 3
+                start_block = maze.grid[y][x]
+                end_block = maze.grid[exit_y][exit_x]
 
-            elif choice == 4:
-                algo = "hak" if algo == "dfs" else "dfs"
-                break
+                maze.entry = start_block
+                maze.exit = end_block
 
-            elif choice == 5:
-                print(">> Exiting...")
-                return
+                maze.ft_pattern()
+            except Exception as e:
+                print(f"Unexpected Error: {e}")
+                exit(0)
+
+            if algo == "dfs":
+                maze.dfs_generation(start_block)
+            elif algo == "hak":
+                maze.hunt_kill_generation()
+
+            if not config["PERFECT"]:
+                maze.random_loops()
+
+            solve.solve_maze(start_block, end_block)
+
+            try:
+                hex_output = maze.hex_encoding()
+                path = maze.path_direction()
+
+                output_file = config["OUTPUT_FILE"]
+                with open(output_file, "w") as f:
+                    for row in hex_output:
+                        f.write("".join(row) + "\n")
+
+                    f.write("\n")
+                    f.write(f"{x},{y}")
+                    f.write("\n")
+                    f.write(f"{exit_x},{exit_y}")
+
+                    f.write("\n")
+                    for p in path:
+                        f.write(p)
+            except Exception as err:
+                print(f"ERROR: {err}")
+
+            # User Interactions
+            flag = 0
+            while True:
+                print(flush=True)
+                os.system("clear")
+                maze.visual(index)
+                init_program(algo, maze)
+                choice = start_program(maze)
+
+                if choice == 1:
+                    if maze.seed is None:
+                        flag += 1
+                        maze.seed = flag
+                    break
+
+                elif choice == 2:
+                    maze.show_path = not maze.show_path
+
+                elif choice == 3:
+                    index = (index + 1) % 3
+
+                elif choice == 4:
+                    algo = "hak" if algo == "dfs" else "dfs"
+                    break
+
+                elif choice == 5:
+                    print(">> Exiting...")
+                    return
+    except KeyboardInterrupt:
+        print("\nProgram Interrupted")
 
 
 if __name__ == "__main__":
