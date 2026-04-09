@@ -39,6 +39,8 @@ def parse_config() -> dict:
                     else:
                         key, value = line.split("=", 1)
                         key, value = key.strip().upper(), value.strip()
+                        if not value:
+                            raise ValueError(f"No Value Given '{key}'")
                         if key in config:
                             raise ValueError("Duplicate Lines")
                         if key not in valid_keys and not "SEED":
@@ -54,7 +56,7 @@ def parse_config() -> dict:
 
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(0)
 
     # Convert the Dict values into valide Data ready to Use
     try:
@@ -68,15 +70,26 @@ def parse_config() -> dict:
                     raise ValueError(f"{key} coordinates out of bounds")
                 config[key] = (x, y)
 
-            elif key in ["WIDTH", "HEIGHT", "SEED"]:
+            elif key in ["WIDTH", "HEIGHT"]:
                 try:
                     val = int(value)
-                    if val <= 0 and key != "SEED":
+                    if val <= 0:
                         raise ValueError()
                     config[key] = val
                 except (TypeError, ValueError):
                     raise ValueError(f"{key}: '{val}' must be Positive"
                                      " number")
+
+            elif key == "SEED":
+                value = str(value).strip()
+                try:
+                    config[key] = int(value)
+                except ValueError:
+                    try:
+                        config[key] = float(value)
+                    except ValueError:
+                        config[key] = value
+                print(type(config[key]))
 
             elif key == "PERFECT":
                 value = value.lower().capitalize()
@@ -117,7 +130,7 @@ def parse_config() -> dict:
 
     except Exception as err:
         print(f"ERROR: {err}", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(0)
 
     return config
 

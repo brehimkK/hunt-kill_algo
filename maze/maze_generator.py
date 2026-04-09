@@ -315,11 +315,11 @@ class MazeGenerator:
         for y in range(self.height):
             for x in range(self.width):
                 b = self.grid[y][x]
-                print(wall, end="")
+                print(wall, end="")  # print the corner
                 print(
                     wall if b.has_wall("top")
-                    else block, end="")
-            print(wall)  # rightmost corner
+                    else block, end="")  # print the wal if existe
+            print(wall)  # print the right most all blocks
 
             # Row 2: draw the "left" walls and the cell interior
             for x in range(self.width):
